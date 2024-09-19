@@ -6,14 +6,11 @@ import argparse
 from datetime import date
 
 
-import time
-import logging
 import json
 import requests
 import pandas as pd
 from tqdm.auto import tqdm
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 __repository__ = 'showstats'
 __license__ = "MIT"
