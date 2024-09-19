@@ -6,11 +6,14 @@ import argparse
 from datetime import date
 
 
+import time
+import logging
 import json
 import requests
 import pandas as pd
 from tqdm.auto import tqdm
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 __repository__ = 'showstats'
 __license__ = "MIT"
@@ -27,9 +30,9 @@ PLATFORMS = ['psn', 'xbl', 'mlbts', 'nsw']
 API_URL = 'https://mlb24.theshow.com'
 API_LINKS = {
     'items' : '/apis/items.json?type=mlb_card&',
-    'listings' : ' /apis/listings.json?type=mlb_card&',
+    'listings' : '/apis/listings.json?type=mlb_card&',
     'captains' : '/apis/captains.json?',
-    'roster_updates' : ' /apis/roster_updates.json',
+    'roster_updates' : '/apis/roster_updates.json',
     'game_history' : '/apis/game_history.json?username={username}&platform={platform}&mode=arena&',
 }
 API_PAGE = 'page={page}'
@@ -42,11 +45,11 @@ def convert_json(param, platform, username, page=1):
         page = 1
     # grabbing specific URL from global dictionary based on datatype passed as argument
     if param == 'game_history':
-        url = str(API_URL + API_LINKS[param].format(username=username, platform=platform))
+        url = f"{API_URL}{API_LINKS[param].format(username=username, platform=platform)}{API_PAGE.format(page=page)}"
     else:
-        url = str(API_LINKS[param])
+        url = f"{API_URL}{API_LINKS[param].format(username=username, platform=platform)}{API_PAGE.format(page=page)}"
     # combining unique URL for API request with generic JSON page extension
-    url = str(url + API_PAGE.format(page=page)) 
+    url = str(url + API_PAGE.format(page=page))
     page = requests.get(url)
     if page.status_code == 200:
         return page.json()
